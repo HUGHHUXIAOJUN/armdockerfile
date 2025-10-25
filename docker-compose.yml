@@ -1,13 +1,16 @@
 services:
   nginx:
-    image: nginx:alpine
+    image: nginx:latest  # 使用最新版本以支持 HTTP/3
     container_name: web-nginx
     ports:
       - "80:80"
+      - "443:443/tcp"
+      - "443:443/udp"  # HTTP/3 需要 UDP 端口
     volumes:
       - ./html:/var/www/html
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-      #- ./nginx/typecho.conf:/etc/nginx/conf.d/typecho.conf
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl  # SSL 证书目录
       - ./logs/nginx:/var/log/nginx
     depends_on:
       - php
